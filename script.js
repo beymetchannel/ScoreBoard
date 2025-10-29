@@ -392,7 +392,7 @@ function saveBattleData() {
 // メニュー2層目で保存データを表示する
 function showDataSubmenu() {
   const dataList = JSON.parse(localStorage.getItem('battleData') || '[]');
-  dataList.sort((a,b)=>new Date(a.timestamp) - new Date(b.timestamp));
+  dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp));
 
   const container = document.getElementById('dataBattleList');
   container.innerHTML = '';
@@ -502,3 +502,4 @@ resultBtn.addEventListener('click', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
