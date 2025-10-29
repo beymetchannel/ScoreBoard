@@ -437,7 +437,7 @@ function showDataSubmenu() {
 // リザルト表示
 function showResultSubmenu() {
   const dataList = JSON.parse(localStorage.getItem('battleData') || '[]');
-  dataList.sort((a,b)=>new Date(a.timestamp) - new Date(b.timestamp));
+  dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp)); // 降順
 
   const container = document.getElementById('resultBattleList');
   container.innerHTML = '';
@@ -450,11 +450,12 @@ function showResultSubmenu() {
     }
     summary[d.blader].battle++;
     summary[d.blader].score += d.score;
-    summary[d.blader].loss += d.opponentScore; // concede → loss
+    summary[d.blader].loss += d.opponentScore;
     if(d.score > d.opponentScore) summary[d.blader].win++;
     else summary[d.blader].lose++;
   });
 
+  // ヘッダー
   const headerDiv = document.createElement('div');
   headerDiv.className = 'battleDataHeader';
   headerDiv.innerHTML = `
@@ -464,7 +465,6 @@ function showResultSubmenu() {
     <span>Lose</span>
     <span>Win%</span>
     <span>Score</span>
-    <span>Loss</span>
     <span>Diff</span>
   `;
   container.appendChild(headerDiv);
@@ -474,20 +474,20 @@ function showResultSubmenu() {
     const diff = stats.score - stats.loss;
     const div = document.createElement('div');
     div.className = 'battleDataItem';
-    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr';
+    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr';
     div.innerHTML = `
       <span>${blader}</span>
       <span>${stats.battle}</span>
       <span>${stats.win}</span>
       <span>${stats.lose}</span>
       <span>${winRate}</span>
-      <span>${stats.score}</span>
-      <span>${stats.loss}</span>
+      <span>${stats.score}-${stats.loss}</span>
       <span>${diff}</span>
     `;
     container.appendChild(div);
   });
 }
+
 
 
 
@@ -511,6 +511,7 @@ resultBtn.addEventListener('click', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
