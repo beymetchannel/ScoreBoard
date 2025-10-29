@@ -112,10 +112,17 @@ addBlader.addEventListener('click', () => {
   loadBladers();
 });
 window.addEventListener('load', () => {
-  // 保存データを表示
-  showDataSubmenu();    // データ一覧
-  showResultSubmenu();  // リザルト
+  // ブレーダー選択を更新
+  updateBladerSelects();
+
+  // ブレーダー一覧を更新
+  loadBladers();
+
+  // データ一覧とリザルトも反映
+  showDataSubmenu();
+  showResultSubmenu();
 });
+
 
 let scores = { L: 0, R: 0 };
 let battleResults = {};
@@ -506,5 +513,6 @@ resultBtn.addEventListener('click', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
