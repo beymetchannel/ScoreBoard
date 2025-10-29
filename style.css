@@ -8,7 +8,7 @@ html, body {
 }
 
 body {
-  background-image: url('https://i.imgur.com/B111dCE.jpeg');
+  background-image: url('https://i.imgur.com/xY23anZ.png');
   background-size: cover;
   background-position: center; 
   background-repeat: no-repeat; 
@@ -481,5 +481,6 @@ body {
 .option-btn:hover { opacity: 1; }
 
 .hidden { display: none; }
+
 
 
