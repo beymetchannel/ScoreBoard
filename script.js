@@ -112,13 +112,11 @@ addBlader.addEventListener('click', () => {
   loadBladers();
 });
 window.addEventListener('load', () => {
-  // ブレーダー選択を更新
+  // ブレーダー選択肢の更新
   updateBladerSelects();
 
-  // ブレーダー一覧を更新
+  // 左メニューの一覧を更新
   loadBladers();
-
-  // データ一覧とリザルトも反映
   showDataSubmenu();
   showResultSubmenu();
 });
@@ -513,6 +511,7 @@ resultBtn.addEventListener('click', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
