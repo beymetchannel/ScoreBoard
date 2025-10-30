@@ -1,3 +1,4 @@
+
 /* ===== メニュー制御 ===== */
 const menuIcon = document.getElementById('menuIcon');
 const menuPanel = document.getElementById('menuPanel');
@@ -661,6 +662,29 @@ function updateResultList() {
   });
 }
 
+
+
+const overlay = document.getElementById('overlay');
+const board = document.getElementById('welcomeBoard');
+
+overlay.addEventListener('click', () => {
+  // 画面縦横比取得
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const ratio = (width / height).toFixed(2);
+  console.log(`Current Ratio: ${ratio}`);
+
+  // フワッとフェードアウト
+  board.style.transform = 'rotate(-90deg) scale(0.8)';
+  board.style.opacity = '0';
+  overlay.style.opacity = '0';
+
+  // 0.5秒後に完全非表示
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    // 必要ならここで再描写処理も追加
+  }, 500);
+});
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
