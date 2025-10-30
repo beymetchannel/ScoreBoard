@@ -661,10 +661,56 @@ function updateResultList() {
   });
 }
 
+const startupScreen = document.getElementById('startupScreen');
+
+function checkOrientation() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  // 横向きならtrue、縦向きならfalse
+  return w > h;
+}
+
+function updateStartupScreen() {
+  if (checkOrientation()) {
+    startupScreen.innerHTML = 'タップで開始';
+  } else {
+    startupScreen.innerHTML = '画面を横向きにして下さい<br>タップで開始';
+  }
+}
+
+// タップでウェルカム画面を非表示
+startupScreen.addEventListener('click', () => {
+  if (!checkOrientation()) {
+    // 縦向きなら無視して待つ
+    alert('横向きにしてください');
+    return;
+  }
+  startupScreen.style.display = 'none';
+  adjustLayout(); // レイアウト再計算
+});
+
+// ウィンドウサイズが変わったらウェルカム画面更新
+window.addEventListener('resize', updateStartupScreen);
+
+// 初回チェック
+updateStartupScreen();
+
+function adjustLayout() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+
+  // CSS変数に高さをセット
+  document.body.style.setProperty('--vh', `${h * 0.01}px`);
+
+  console.log('レイアウト更新: ', w, h);
+
+}
 
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
