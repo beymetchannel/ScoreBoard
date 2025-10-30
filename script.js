@@ -660,21 +660,33 @@ function updateResultList() {
   });
 }
 
-// 現在のvhを計算してCSS変数に反映
-function setVh() {
-  let vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
+// レイアウト更新関数（必要な処理をここで呼ぶ）
+function updateLayout() {
+  // カード高さやバトルエリアの再調整など
+  if (typeof matchCardHeight === "function") {
+    matchCardHeight(); // 例：カード高さ揃え関数
+  }
+  if (typeof adjustLayout === "function") {
+    adjustLayout(); // 例：あなたが持っているUI更新関数
+  }
+
+  console.log("✅ Layout updated");
 }
 
-// 初期設定
-setVh();
+// 画面の向きが変わったとき
+window.addEventListener("orientationchange", () => {
+  console.log("📱 orientation changed");
+  setTimeout(updateLayout, 200); // 少し遅らせるのがコツ
+});
 
-// ウィンドウサイズ変更・向き変更時に再計算
-window.addEventListener('resize', setVh);
-window.addEventListener('orientationchange', setVh);
+// 画面サイズが変わったとき（PCでも発火）
+window.addEventListener("resize", () => {
+  setTimeout(updateLayout, 200);
+});
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
