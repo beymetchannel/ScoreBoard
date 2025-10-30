@@ -208,7 +208,7 @@ body {
 
 /* ブレーダー削除ボタンと同じサイズ感にする */
 .small-clear-btn {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
   height: 36px;
@@ -583,5 +583,6 @@ body {
 .option-btn:hover { opacity: 1; }
 
 .hidden { display: none; }
+
 
 
