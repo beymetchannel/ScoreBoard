@@ -59,35 +59,107 @@ const bladerInput = document.getElementById('bladerName');
 const bladerList = document.getElementById('bladerList');
 
 function updateBladerSelects() {
-  const list = JSON.parse(localStorage.getItem('bladers') || '[]');
-  const selects = [document.getElementById('leftBlader'), document.getElementById('rightBlader')];
-  
-  selects.forEach(sel => {
-    // 既存の選択肢を全てクリア
-    sel.innerHTML = '';
-    
-    // 初期値はNULL
-    const nullOption = document.createElement('option');
-    nullOption.value = '';
-    nullOption.textContent = '';
-    nullOption.selected = true;
-    sel.appendChild(nullOption);
+  let bladers = JSON.parse(localStorage.getItem('bladers')) || [];
+  const fullList = [...bladers, 'Blader A', 'Blader B', '新規登録'];
 
-    // ブレーダーリストを追加
-    list.forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      sel.appendChild(opt);
+  const leftSelect = document.getElementById('leftBlader');
+  const rightSelect = document.getElementById('rightBlader');
+  const selects = [leftSelect, rightSelect];
+
+  selects.forEach(select => {
+    const currentValue = select.value;
+    select.innerHTML = '';
+    fullList.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
     });
+    // 元の値がある場合は復元
+    if (fullList.includes(currentValue)) {
+      select.value = currentValue;
+    } else {
+      select.value = ''; // 存在しなければ空に
+    }
+    select._prevValue = select.value;
   });
+
+  function handleSelectChange(side) {
+    const leftValue = leftSelect.value;
+    const rightValue = rightSelect.value;
+    const select = side === 'L' ? leftSelect : rightSelect;
+
+    // 新規登録選択時
+    if (select.value === '新規登録') {
+      const name = prompt('新しいブレーダー名を入力してください');
+      if (name && name.trim() !== '') {
+        addNewBlader(name, select);
+      } else {
+        // キャンセル or 空入力 → 選択を空に
+        select.value = '';
+      }
+    }
+
+    // 左右同じ値なら入れ替え
+    if (leftSelect.value && leftSelect.value === rightSelect.value) {
+      if (side === 'L') {
+        // 左を変えた場合 → 右の値を左の前の値に入れ替え
+        const temp = rightSelect.value;
+        rightSelect.value = leftSelect._prevValue || ''; 
+        leftSelect.value = temp;
+      } else {
+        // 右を変えた場合 → 左の値を右の前の値に入れ替え
+        const temp = leftSelect.value;
+        leftSelect.value = rightSelect._prevValue || '';
+        rightSelect.value = temp;
+      }
+    }
+
+    leftSelect._prevValue = leftSelect.value;
+    rightSelect._prevValue = rightSelect.value;
+  }
+
+  leftSelect.addEventListener('change', () => handleSelectChange('L'));
+  rightSelect.addEventListener('change', () => handleSelectChange('R'));
 }
+
+// 新規ブレーダー追加関数
+function addNewBlader(name, selectElement) {
+  name = name.trim();
+  if(!name || name === '新規登録') {
+    alert('「新規登録」という名前は使用できません。');
+    selectElement.value = '';
+    return;
+  }
+
+  let list = JSON.parse(localStorage.getItem('bladers') || '[]');
+  if(!list.includes(name)) list.push(name);
+  localStorage.setItem('bladers', JSON.stringify(list));
+
+  loadBladers();        // 左メニューリストも更新
+  updateBladerSelects(); // セレクトも更新
+  selectElement.value = name; // 選択したままにする
+}
+
+
+// ×ボタンで選択解除
+document.querySelectorAll('.clear-select-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const side = btn.dataset.side;
+    const select = document.getElementById(side === 'L' ? 'leftBlader' : 'rightBlader');
+    select.value = ''; // 空にする
+  });
+});
+
+
+
 
 function loadBladers() {
   const list = JSON.parse(localStorage.getItem('bladers') || '[]');
   bladerList.innerHTML = '';
   list.forEach(name => addBladerToList(name));
-  updateBladerSelects(); // ← 追加
+  updateBladerSelects();
 }
 
 function addBladerToList(name) {
@@ -110,7 +182,9 @@ addBlader.addEventListener('click', () => {
   localStorage.setItem('bladers', JSON.stringify(list));
   bladerInput.value = '';
   loadBladers();
+  bladerInput.focus();
 });
+
 window.addEventListener('load', () => {
   // ブレーダー選択肢の更新
   updateBladerSelects();
@@ -122,6 +196,10 @@ window.addEventListener('load', () => {
 });
 
 
+
+
+
+
 let scores = { L: 0, R: 0 };
 let battleResults = {};
 let currentBattle = 1;
@@ -130,6 +208,14 @@ let openedButton = null; // 展開中の中央ボタンを追跡
 
 function toggleBattleOptions(num=null, side=null) {
   const resetBtn = document.querySelector('.reset-btn');
+
+  if(openedSubmenu) {
+    bladerSubmenu?.classList.remove('active');
+    dataSubmenu?.classList.remove('active');
+    resultSubmenu?.classList.remove('active');
+    openedSubmenu = null;
+    return; // ここで処理終了
+  }
 
   if((side==='L' || side==='R') && (scores.L>=4 || scores.R>=4)) return;
 
@@ -292,7 +378,7 @@ function undoLastBattle(){
 
 function clearAll(){
 
-  saveBattleData(); // ← ここで保存
+  saveBattleData(); 
 
   scores={L:0,R:0};
   battleResults={};
@@ -406,32 +492,49 @@ function showDataSubmenu() {
   const container = document.getElementById('dataBattleList');
   container.innerHTML = '';
 
-  // ヘッダー
+  // ヘッダー（Del列なし）
   const headerDiv = document.createElement('div');
   headerDiv.className = 'battleDataHeader';
   headerDiv.innerHTML = `
     <span>Blader</span>
     <span>Score</span>
     <span>Time</span>
+    <span></span>
   `;
   container.appendChild(headerDiv);
 
   // データ行
-  dataList.forEach(d => {
+  dataList.forEach((d, index) => {
     const date = new Date(d.timestamp);
     const hhmm = date.getHours().toString().padStart(2,'0') + ':' + date.getMinutes().toString().padStart(2,'0');
 
     const div = document.createElement('div');
     div.className = 'battleDataItem';
-    // 得点-失点形式に変更、Opponent列は削除
+    div.style.display = 'grid';
+    div.style.gridTemplateColumns = '2fr 1fr 1fr auto'; // 最後にDel用の列
+    div.style.alignItems = 'center';
+
     div.innerHTML = `
       <span>${d.blader}</span>
       <span>${d.score}-${d.opponentScore}</span>
       <span>${hhmm}</span>
+      <button class="small-del-btn">Del</button>
     `;
+
+    div.querySelector('.small-del-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(confirm("このデータを削除してもよろしいですか？")) {
+        dataList.splice(index, 1);
+        localStorage.setItem('battleData', JSON.stringify(dataList));
+        showDataSubmenu(); // 再描画
+      }
+    });
+
     container.appendChild(div);
   });
 }
+
+
 
 
 // リザルト表示
@@ -456,25 +559,28 @@ function showResultSubmenu() {
   });
 
   // ヘッダー
-  const headerDiv = document.createElement('div');
-  headerDiv.className = 'battleDataHeader';
-  headerDiv.innerHTML = `
-    <span>Blader</span>
-    <span>Battle</span>
-    <span>Win</span>
-    <span>Lose</span>
-    <span>Win%</span>
-    <span>Score</span>
-    <span>Diff</span>
-  `;
-  container.appendChild(headerDiv);
+ const headerDiv = document.createElement('div');
+headerDiv.className = 'battleDataHeader';
+headerDiv.style.display = 'grid';
+headerDiv.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; // ←全列幅を統一
+headerDiv.innerHTML = `
+  <span>Blader</span>
+  <span>Battle</span>
+  <span>Win</span>
+  <span>Lose</span>
+  <span>Win%</span>
+  <span>Score</span>
+  <span>Diff</span>
+`;
+container.appendChild(headerDiv);
 
-  Object.entries(summary).forEach(([blader, stats])=>{
-    const winRate = stats.battle ? ((stats.win/stats.battle)*100).toFixed(1)+'%' : '0%';
+  Object.entries(summary).forEach(([blader, stats]) => {
+    const winRate = stats.battle ? Math.floor((stats.win / stats.battle) * 100) + '%' : '0%';
     const diff = stats.score - stats.loss;
     const div = document.createElement('div');
     div.className = 'battleDataItem';
-    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr';
+    div.style.display = 'grid';
+    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; // ヘッダーと同じ
     div.innerHTML = `
       <span>${blader}</span>
       <span>${stats.battle}</span>
@@ -488,7 +594,8 @@ function showResultSubmenu() {
   });
 }
 
-
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
 
 
 // リザルト
@@ -507,6 +614,51 @@ resultBtn.addEventListener('click', () => {
     showResultSubmenu();
   }
 });
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const resultClearBtn = document.getElementById("resultClearBtn");
+    const resultBattleList = document.getElementById("resultBattleList");
+    const leftScore = document.getElementById("leftScore");
+    const rightScore = document.getElementById("rightScore");
+
+    resultClearBtn.addEventListener("click", function() {
+        // 確認ダイアログ
+        if (confirm("全バトルデータを削除してもよろしいですか？")) {
+
+
+            // ローカルストレージに保存している場合も削除
+            localStorage.removeItem("battleData"); // 既存データキー名に合わせて調整
+            localStorage.removeItem("resultData"); // 必要に応じて
+            // 再描画
+            showResultSubmenu();
+            showDataSubmenu();
+        }
+    });
+});
+
+
+function updateResultList() {
+  const resultList = document.getElementById('resultBattleList');
+  resultList.innerHTML = '';
+
+  if(battleData.length === 0){
+    resultList.innerHTML = '<div style="color:#fff; text-align:center;">データがありません</div>';
+    return;
+  }
+
+  battleData.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'battleDataItem';
+    div.innerHTML = `
+      <span>${item.blader}</span>
+      <span>${item.score}</span>
+      <span>${item.time}</span>
+    `;
+    resultList.appendChild(div);
+  });
+}
 
 
 window.addEventListener('load', adjustButtonHeights);
