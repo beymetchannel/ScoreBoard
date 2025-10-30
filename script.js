@@ -664,19 +664,32 @@ function updateResultList() {
 
 
 
-const overlay = document.getElementById('overlay');
+window.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('overlay');
 
-overlay.addEventListener('click', () => {
-  overlay.style.transition = 'opacity 0.5s ease'; // 0.5秒でフェード
-  overlay.style.opacity = '0';                   // フェードアウト開始
+  // セッション中に一度表示したかチェック
+  if (!sessionStorage.getItem('welcomeShown')) {
+    overlay.style.display = 'flex';
 
-  setTimeout(() => {
-    location.reload(); // フェードアウト後にページリロード
-  }, 500); // 0.5秒後
+    overlay.addEventListener('click', () => {
+      overlay.style.transition = 'opacity 0.5s ease';
+      overlay.style.opacity = '0';
+
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        sessionStorage.setItem('welcomeShown', 'true'); // このセッションではもう表示しない
+        location.reload(); // 画面リロードしたい場合のみ
+      }, 500);
+    });
+  } else {
+    overlay.style.display = 'none';
+  }
 });
+
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
