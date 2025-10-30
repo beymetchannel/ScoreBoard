@@ -665,29 +665,19 @@ function updateResultList() {
 
 
 const overlay = document.getElementById('overlay');
-const board = document.getElementById('welcomeBoard');
 
 overlay.addEventListener('click', () => {
-  // 画面縦横比取得
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  const ratio = (width / height).toFixed(2);
-  console.log(`Current Ratio: ${ratio}`);
+  overlay.style.transition = 'opacity 0.5s ease'; // 0.5秒でフェード
+  overlay.style.opacity = '0';                   // フェードアウト開始
 
-  // フワッとフェードアウト
-  board.style.transform = 'rotate(-90deg) scale(0.8)';
-  board.style.opacity = '0';
-  overlay.style.opacity = '0';
-
-  // 0.5秒後に完全非表示
   setTimeout(() => {
-    overlay.style.display = 'none';
-
-  }, 500);
+    location.reload(); // フェードアウト後にページリロード
+  }, 500); // 0.5秒後
 });
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
