@@ -399,6 +399,7 @@ body {
   color: #fff;
   outline: none;
   text-align: left;
+  margin-left: 10px;
 }
 
 .blader-select-area {
@@ -583,6 +584,7 @@ body {
 .option-btn:hover { opacity: 1; }
 
 .hidden { display: none; }
+
 
 
 
