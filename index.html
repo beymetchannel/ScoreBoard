@@ -33,17 +33,24 @@
   </div>
 
   <div class="submenu-panel" id="resultSubmenu">
-    <div id="resultBattleList" style="padding:10px; overflow-y:auto; max-height:100vh;"></div>
+    <button id="resultClearBtn" class="small-clear-btn">Clear</button>
+    <div id="resultBattleList"></div>
   </div>
 
   <!-- ===== カード類 ===== -->
   <div class="card left-card" onclick="toggleBattleOptions(null,'L')">
     <div class="blader-select-area" onclick="event.stopPropagation()">
-      <label for="leftBlader" class="blader-label">Blader</label>
-      <select id="leftBlader" class="blader-select"></select>
+      <div class="blader-select-wrapper">
+        <select id="leftBlader" class="blader-select">
+          <option value="Blader A" selected>Blader A</option>
+        </select>
+        <button class="clear-select-btn" data-side="L">×</button>
+      </div>
     </div>
     <div class="score" id="leftScore">0</div>
   </div>
+
+
 
   <div class="battle-buttons" id="battleButtons">
     <div id="battleBtnWrapper">
@@ -54,8 +61,12 @@
 
   <div class="card right-card" onclick="toggleBattleOptions(null,'R')">
     <div class="blader-select-area" onclick="event.stopPropagation()">
-      <label for="rightBlader" class="blader-label">Blader</label>
-      <select id="rightBlader" class="blader-select"></select>
+      <div class="blader-select-wrapper">
+        <select id="rightBlader" class="blader-select">
+          <option value="Blader B" selected>Blader B</option>
+        </select>
+        <button class="clear-select-btn" data-side="R">×</button>
+      </div>
     </div>
     <div class="score" id="rightScore">0</div>
   </div>
