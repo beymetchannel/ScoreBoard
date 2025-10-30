@@ -682,12 +682,13 @@ overlay.addEventListener('click', () => {
   // 0.5秒後に完全非表示
   setTimeout(() => {
     overlay.style.display = 'none';
-    // 必要ならここで再描写処理も追加
+
   }, 500);
 });
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
