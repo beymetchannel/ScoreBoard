@@ -660,9 +660,22 @@ function updateResultList() {
   });
 }
 
+// 現在のvhを計算してCSS変数に反映
+function setVh() {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// 初期設定
+setVh();
+
+// ウィンドウサイズ変更・向き変更時に再計算
+window.addEventListener('resize', setVh);
+window.addEventListener('orientationchange', setVh);
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
 
 
 
