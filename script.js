@@ -1,4 +1,3 @@
-
 /* ===== メニュー制御 ===== */
 const menuIcon = document.getElementById('menuIcon');
 const menuPanel = document.getElementById('menuPanel');
@@ -276,8 +275,10 @@ function selectResult(side, type) {
   const labelMap = { SF:'SPIN', BF:'BURST', OF:'OVER', XF:'XTREME' };
   const leftScoreEl = document.getElementById('leftScore');
   const rightScoreEl = document.getElementById('rightScore');
-  const btn = document.getElementById(`battle${currentBattle}`);
   const resetBtn = document.querySelector('.reset-btn');
+  const btn = document.getElementById(`battle${currentBattle}`);
+
+  btn.classList.remove("spin","burst","over","xtreme");// 一旦、全部の色クラスを外す
 
   if(battleResults[currentBattle]){
     const prev = battleResults[currentBattle];
@@ -294,6 +295,11 @@ function selectResult(side, type) {
   btn.textContent = labelMap[type];
   btn.classList.remove('tab-left','tab-right','no-glow');
   btn.classList.add(side==='L'?'tab-left':'tab-right','no-glow');
+
+  if (type === "SF") btn.classList.add("spin");
+  if (type === "BF") btn.classList.add("burst");
+  if (type === "OF") btn.classList.add("over");
+  if (type === "XF") btn.classList.add("xtreme");
 
   // 展開を閉じる
   document.getElementById('battleOptions').classList.add('hidden');
@@ -689,16 +695,3 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
-
-
-
-
-
-
-
-
-
-
-
-
-
