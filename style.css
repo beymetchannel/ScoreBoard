@@ -1,693 +1,698 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
+/* ===== メニュー制御 ===== */
+const menuIcon = document.getElementById('menuIcon');
+const menuPanel = document.getElementById('menuPanel');
+const bladerBtn = document.getElementById('bladerBtn');
+const bladerSubmenu = document.getElementById('bladerSubmenu');
+const battleOptions = document.getElementById('battleOptions');
+const dataBtn = menuPanel.querySelectorAll('.menu-btn')[2];
+const dataSubmenu = document.getElementById('dataSubmenu');
 
-body {
-  background-image: url('https://i.imgur.com/xY23anZ.png');
-  background-size: 100% 100%;
-  background-position: center; 
-  background-repeat: no-repeat; 
- 
-  font-family: "Orbitron", "Segoe UI", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  column-gap: 10px; 
-  overflow: hidden;
-  height: calc(var(--vh, 1vh) * 100);
-}
-
-
-/* ウェルカムボード */
-#overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease;
-}
-
-#welcomeBoard {
-  color: #fff;
-  font-size: 2em;
-  text-align: center;
-  line-height: 1.5;
-  transition: opacity 0.5s ease;
-}
-
-#welcomeBoard span {
-  display: block;
-  font-size: 0.5em;
-  margin-top: 0.3em;
-}
-
-
-
-
-
-
-/* ===== ハンバーガーメニュー ===== */
-.menu-container {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 2000;
-}
-
-.menu-icon {
-  font-size: 32px;
-  color: #00ffff;
-  cursor: pointer;
-  text-shadow: 0 0 10px #00ffff;
-  user-select: none;
-}
-
-.menu-panel {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 180px;
-  height: 100vh;
-  background: rgba(0,0,0,0.9);
-  box-shadow: 4px 0 15px rgba(0,255,255,0.4);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  padding-top: 60px;
-  z-index: 1500;
-}
-
-.menu-panel.active { transform: translateX(0); }
-
-.menu-btn {
-  height: 36px;
-  background: rgba(0,255,255,0.15);
-  color: #00ffff;
-  border: none;
-  text-align: left;
-  padding: 0 15px;
-  font-size: 1em;
-  cursor: pointer;
-  transition: 0.3s;
-  font-family: "Orbitron", sans-serif;
-}
-.menu-btn:hover { background: rgba(0,255,255,0.3); }
-
-/* ===== 2層目メニュー ===== */
-.submenu-panel {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0;
-  left: 180px;
-  width: 300px;
-  height: calc(var(--vh, 1vh) * 100);
-  background: rgba(0,0,0,0.85);
-  box-shadow: 4px 0 15px rgba(0,255,255,0.3);
-  transform: translateX(-200%); /* ← 初期は非表示 */
-  transition: transform 0.3s ease;
-  padding-top: 60px;
-  z-index: 1400;
-}
-
-/* 2層目を開くときだけ表示 */
-.submenu-panel.active {
-  transform: translateX(0);
-}
-
-.blader-input-area {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 0 10px;
-}
-
-#bladerName {
-  width: 80%; 
-  height: 36px;
-  font-size: 1em;
-  border-radius: 6px;
-  border: none;
-  padding: 0 10px;
-  background: rgba(255,255,255,0.1);
-  color: #fff;
-}
-
-#addBlader {
-  height: 36px;
-  font-size: 0.9em;
-  border-radius: 4px;
-  border: none;
-  background: #00aaaa;
-  color: #fff;
-  font-family: "Orbitron", sans-serif;
-  cursor: pointer;
-  padding: 0 10px; 
-  width: auto;
-}
-#addBlader:hover { background: rgba(0,255,255,0.3); }
-
-
-.blader-list {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 0 10px;
-}
-
-.blader-list,
-#dataBattleList,
-#resultBattleList { 
-  flex: 1;  
-  overflow-y: auto;
-}
-/* スクロールバー */
-.blader-list::-webkit-scrollbar,
-#dataBattleList::-webkit-scrollbar,
-#resultBattleList::-webkit-scrollbar {
-  width: 6px;
-}
-.blader-list::-webkit-scrollbar-thumb,
-#dataBattleList::-webkit-scrollbar-thumb,
-#resultBattleList::-webkit-scrollbar-thumb {
-  background-color: rgba(255,255,255,0.3);
-  border-radius: 3px;
-}
-
-.blader-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 10px;
-}
-
-.blader-item span {
-  font-size: 1em;
-  color: #fff;
-  display: inline-block;
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.blader-item button {
-  height: 36px;
-  font-size: 0.9em;
-  border-radius: 4px;
-  border: none;
-  background: #ff5555;
-  color: #fff;
-  font-family: "Orbitron", sans-serif;
-  cursor: pointer;
-  padding: 0 10px;
-}
-.blader-item button:hover { background: rgba(0,255,255,0.3); }
-
-
-/* リザルト専用 */
-#resultSubmenu {
-  position: fixed;
-  top: 0;
-  left: 180px;  /* メニューの右から開始 */
-  width: calc(100vw - 180px); /* 右端まで */
-  height: 100vh;
-  background: rgba(0,0,0,0.85);
-  box-shadow: 4px 0 15px rgba(0,255,255,0.3);
-  transform: translateX(-200%);
-  transition: transform 0.3s ease;
-  padding-top: 60px;
-  z-index: 1400;
-}
-
-#resultSubmenu.active {
-  transform: translateX(0);
-}
-
-
-/* ブレーダー削除ボタンと同じサイズ感にする */
-.small-clear-btn {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  height: 36px;
-  font-size: 0.9em;
-  border-radius: 4px;
-  border: none;
-  background: #ff5555;
-  color: #fff;
-  font-family: "Orbitron", sans-serif;
-  cursor: pointer;
-  padding: 0 10px;
-  z-index: 2000; /* スクロールリストより前面 */
-}
-.small-clear-btn:hover {
-  background: rgba(0,255,255,0.3);
-}
-
-
-
-/* リザルト用のヘッダー・データ */
-#resultBattleList .battleDataHeader,
-#resultBattleList .battleDataItem {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; /* Blader:Battle:Win:Lose:Win%:Score:Concede:Diff */
-  gap: 5px;
-  align-items: center;
-}
-
-#resultBattleList .battleDataHeader span {
-  font-weight: bold;
-  color: #00ffff;
-  background: rgba(0,255,255,0.2);
-  padding: 5px 8px;
-  border-radius: 4px;
-  text-align: center;
-}
-
-#resultBattleList .battleDataItem span {
-  color: #fff;
-  background: rgba(0,0,0,0.3);
-  padding: 5px 8px;
-  border-radius: 4px;
-  text-align: center;
-}
-
-#resultBattleList .battleDataItem span:nth-child(1),
-#resultBattleList .battleDataHeader span:nth-child(1) {
-  text-align: left;
-  padding-left: 10px;
-  white-space: nowrap;     /* 改行禁止 */
-  overflow: hidden;        /* はみ出た部分非表示 */
-  text-overflow: ellipsis; /* 省略表示 (…) */
-}
-
-
-
-/* ===== データ一覧の小さいDelボタン ===== */
-.small-del-btn {
-  background-color: #ff4d4d;
-  font-family: "Orbitron", sans-serif;
-  border: none;
-  color: #fff;
-  font-size: 0.7rem;
-  padding: 2px 5px;
-  border-radius: 4px;
-  cursor: pointer;
-  justify-self: end; /* 右端に寄せる */
-  height: 20px;
-}
-
-.small-del-btn:hover {
-  background-color: #ff1a1a;
-}
-
-.battleDataItem .small-del-btn {
-  justify-self: center; /* ボタンをセル内中央に配置 */
-  height: 20px;
-}
-
-
-
-
-/* ===== 既存カード＆バトルUI ===== */
-.card {
-  width: 40%;
-  height: calc(100% - 10px);
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  margin: 5px 0; 
-}
-
-/* 左側カード：左端 → 中央へ透明になる */
-.left-card::before {
-  content: "";
-  position: absolute;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-  width: 50%; /* 必要に応じて調整 */
-  height: 100%;
-  background: linear-gradient(to right,
-    rgba(0, 0, 0, 0.9) 0%,   /* 画面端：90%透明度 */
-    rgba(0, 0, 0, 0.6) 40%,
-    rgba(0, 0, 0, 0.0) 100% /* 中央：透明 */
-  );
-  pointer-events: none;
-}
-
-/* 右側カード：右端 → 中央へ透明になる */
-.right-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(to left,
-    rgba(0, 0, 0, 0.9) 0%, 
-    rgba(0, 0, 0, 0.6) 40%,
-    rgba(0, 0, 0, 0.0) 100%
-  );
-  pointer-events: none;
-}
-.left-card { background-color: #003344; }
-.right-card { background-color: #440000; }
-
-
-
-
-.score {
-  font-size: 12em;
-  font-weight: bold;
-  text-align: center;
-  color: #fff;
-  text-shadow: 0 0 25px rgba(255,255,255,0.6);
-  transition: 0.3s;
-}
-
-.battle-buttons {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between; 
-  height: 100%; /* 90vh; */
-  margin: 0;
-  padding-top: 10px; 
+dataBtn.addEventListener('click', () => {
+  if(openedSubmenu && openedSubmenu !== dataSubmenu){
+    openedSubmenu.classList.remove('active'); // 前のサブメニュー閉じる
+  }
   
+  const isActive = dataSubmenu.classList.contains('active');
+  dataSubmenu.classList.toggle('active', !isActive);
+
+  openedSubmenu = dataSubmenu.classList.contains('active') ? dataSubmenu : null;
+
+  if(dataSubmenu.classList.contains('active')){
+    showDataSubmenu();
+  }
+});
+
+menuIcon.addEventListener('click', () => {
+  const isActive = menuPanel.classList.contains('active');
+  menuPanel.classList.toggle('active', !isActive);
+
+  // 全サブメニューを閉じる
+  bladerSubmenu.classList.remove('active');
+  dataSubmenu.classList.remove('active');
+  resultSubmenu.classList.remove('active');
+
+  battleOptions.classList.add('hidden');
+
+  // 開いているサブメニュー追跡もリセット
+  openedSubmenu = null;
+});
+
+
+
+let openedSubmenu = null; // 展開中のサブメニューを追跡
+
+bladerBtn.addEventListener('click', () => {
+  if(openedSubmenu && openedSubmenu !== bladerSubmenu){
+    openedSubmenu.classList.remove('active'); // 前のサブメニュー閉じる
+  }
+  
+  const isActive = bladerSubmenu.classList.contains('active');
+  bladerSubmenu.classList.toggle('active', !isActive);
+
+  openedSubmenu = bladerSubmenu.classList.contains('active') ? bladerSubmenu : null;
+});
+
+
+/* ===== ブレーダー登録 ===== */
+const addBlader = document.getElementById('addBlader');
+const bladerInput = document.getElementById('bladerName');
+const bladerList = document.getElementById('bladerList');
+
+function updateBladerSelects() {
+  let bladers = JSON.parse(localStorage.getItem('bladers')) || [];
+  const fullList = [...bladers, 'Blader A', 'Blader B', '新規登録'];
+
+  const leftSelect = document.getElementById('leftBlader');
+  const rightSelect = document.getElementById('rightBlader');
+  const selects = [leftSelect, rightSelect];
+
+  selects.forEach(select => {
+    const currentValue = select.value;
+    select.innerHTML = '';
+    fullList.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+    // 元の値がある場合は復元
+    if (fullList.includes(currentValue)) {
+      select.value = currentValue;
+    } else {
+      select.value = ''; // 存在しなければ空に
+    }
+    select._prevValue = select.value;
+  });
+
+  function handleSelectChange(side) {
+    const leftValue = leftSelect.value;
+    const rightValue = rightSelect.value;
+    const select = side === 'L' ? leftSelect : rightSelect;
+
+    // 新規登録選択時
+    if (select.value === '新規登録') {
+      const name = prompt('新しいブレーダー名を入力してください');
+      if (name && name.trim() !== '') {
+        addNewBlader(name, select);
+      } else {
+        // キャンセル or 空入力 → 選択を空に
+        select.value = '';
+      }
+    }
+
+    // 左右同じ値なら入れ替え
+    if (leftSelect.value && leftSelect.value === rightSelect.value) {
+      if (side === 'L') {
+        // 左を変えた場合 → 右の値を左の前の値に入れ替え
+        const temp = rightSelect.value;
+        rightSelect.value = leftSelect._prevValue || ''; 
+        leftSelect.value = temp;
+      } else {
+        // 右を変えた場合 → 左の値を右の前の値に入れ替え
+        const temp = leftSelect.value;
+        leftSelect.value = rightSelect._prevValue || '';
+        rightSelect.value = temp;
+      }
+    }
+
+    leftSelect._prevValue = leftSelect.value;
+    rightSelect._prevValue = rightSelect.value;
+  }
+
+  leftSelect.addEventListener('change', () => handleSelectChange('L'));
+  rightSelect.addEventListener('change', () => handleSelectChange('R'));
 }
 
-#battleBtnWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  flex-grow: 1;
-  gap: 2px;
-}
+// 新規ブレーダー追加関数
+function addNewBlader(name, selectElement) {
+  name = name.trim();
+  if(!name || name === '新規登録') {
+    alert('「新規登録」という名前は使用できません。');
+    selectElement.value = '';
+    return;
+  }
 
-.battle-btn {
-  width: 140px;
-  padding: 0 10px;
-  white-space: nowrap;
-  text-align: center;
-  height: 60px;
-  border: none;
-  border-radius: 8px;
-  background-color: rgba(0,0,0,0.8);
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3em;
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(255,255,255,0.6);
-}
-.battle-btn:active { transform: scale(1.05); }
+  let list = JSON.parse(localStorage.getItem('bladers') || '[]');
+  if(!list.includes(name)) list.push(name);
+  localStorage.setItem('bladers', JSON.stringify(list));
 
-.battle-btn.tab-left { background-color: #003344; border-radius: 0 12px 12px 0; transform: translateX(-25px); }
-.battle-btn.tab-right { background-color: #440000; border-radius: 12px 0 0 12px; transform: translateX(25px); }
-
-
-.battle-btn.no-glow {
-  box-shadow: none !important;
-}
-
-
-/* ===== バトルボタンの色変更 ===== */
-
-/* SPIN (水色) */
-.battle-btn.spin {
-  color: #00eaff;
-  text-shadow: 0 0 8px #00eaff, 0 0 16px #00eaff;
-}
-
-/* BURST (オレンジ) */
-.battle-btn.burst {
-  color: #ff8800;
-  text-shadow: 0 0 8px #ff8800, 0 0 16px #ff6600;
-}
-
-/* OVER (黄緑) */
-.battle-btn.over {
-  color: #99ff00;
-  text-shadow: 0 0 8px #99ff00, 0 0 16px #66ff00;
-}
-
-/* XTREME (紫ピンク) */
-.battle-btn.xtreme {
-  color: #d200ff;
-  text-shadow: 0 0 8px #d200ff, 0 0 16px #a000ff;
-}
-
-
-
-.reset-btn {
-  background-color: #222;
-  font-family: "Orbitron", sans-serif;
-  color: #ffcc00;
-  border-radius: 8px;
-  width: 140px;
-  height: 50px;
-  border: 2px solid #ffcc00;
-  font-size: 1em;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 0px;
-  margin-bottom: 10px; 
-}
-.reset-btn:hover { background-color: #444; transform: scale(1.05); }
-
-.clear-btn {
-  background-color: #550000;
-  border: 2px solid #ff3333;
-  color: #fff;
-  width: 140px;
-  height: 50px;
-  border-radius: 10px;
-  font-size: 1em;
-  font-weight: bold;
-  text-shadow: 0 0 10px #ff5555;
-  cursor: pointer;
-}
-.clear-btn:hover { background-color: #770000; transform: scale(1.05); }
-
-
-/* ===== ブレーダー選択BOX ===== */
-.blader-select select {
-  font-family: "Orbitron", sans-serif;
-  font-size: 1em;
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: none;
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  outline: none;
-  text-align: left;
-  margin-left: 10px;
-}
-
-.blader-select-area {
-  display: flex;
-  align-items: center;
-  gap: 15px;         /* ラベルとBOXの間隔を15pxに */
-  position: absolute;
-  top: 10px; 
-  width: auto;       /* 必要に応じてカード幅に合わせる */
-}
-
-.blader-label {
-  display: inline-block;
-  height: 36px;
-  line-height: 36px;
-  color: #fff;
-  font-size: 1rem;
-  text-align: left;  /* 左揃え */
-  flex-shrink: 0;
-  margin: 0;
-  padding: 0;
-  top: 0px; /* 維持 */
-}
-
-.blader-select {
-  flex-grow: 0;
-  width: 160px;               /* 固定幅（お好みで調整） */
-  height: 36px;
-  border-radius: 6px;
-  border: none;
-  font-size: 1em;
-  font-family: "Orbitron", sans-serif;
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  text-align: left;
-  cursor: pointer;
-  padding: 0 5px;
-  position: relative;
-  top: 0px;
-
-  /* ★以下を追加★ */
-  overflow: hidden;           /* はみ出し非表示 */
-  text-overflow: ellipsis;    /* 「...」で省略表示 */
-  white-space: nowrap;        /* 改行せず1行で表示 */
-  top: 0px;
+  loadBladers();        // 左メニューリストも更新
+  updateBladerSelects(); // セレクトも更新
+  selectElement.value = name; // 選択したままにする
 }
 
 
+// ×ボタンで選択解除
+document.querySelectorAll('.clear-select-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const side = btn.dataset.side;
+    const select = document.getElementById(side === 'L' ? 'leftBlader' : 'rightBlader');
+    select.value = ''; // 空にする
+  });
+});
 
-.blader-select option {
-  background: #222;
-  color: #fff;
+
+
+
+function loadBladers() {
+  const list = JSON.parse(localStorage.getItem('bladers') || '[]');
+  bladerList.innerHTML = '';
+  list.forEach(name => addBladerToList(name));
+  updateBladerSelects();
 }
 
-.blader-select-container {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 8px; /* ラベルとボックスの間隔 */
+function addBladerToList(name) {
+  const div = document.createElement('div');
+  div.className = 'blader-item';
+  div.innerHTML = `<span>${name}</span><button onclick="deleteBlader('${name}')">Del</button>`;
+  bladerList.appendChild(div);
+}
+function deleteBlader(name) {
+  let list = JSON.parse(localStorage.getItem('bladers') || '[]');
+  list = list.filter(n => n !== name);
+  localStorage.setItem('bladers', JSON.stringify(list));
+  loadBladers();
+}
+addBlader.addEventListener('click', () => {
+  const name = bladerInput.value.trim();
+  if(!name) return;
+  let list = JSON.parse(localStorage.getItem('bladers') || '[]');
+  if(!list.includes(name)) list.push(name);
+  localStorage.setItem('bladers', JSON.stringify(list));
+  bladerInput.value = '';
+  loadBladers();
+  bladerInput.focus();
+});
+
+window.addEventListener('load', () => {
+  // ブレーダー選択肢の更新
+  updateBladerSelects();
+
+  // 左メニューの一覧を更新
+  loadBladers();
+  showDataSubmenu();
+  showResultSubmenu();
+});
+
+
+
+
+
+
+let scores = { L: 0, R: 0 };
+let battleResults = {};
+let currentBattle = 1;
+let lastBattleIndex = 0;
+let openedButton = null; // 展開中の中央ボタンを追跡
+
+function toggleBattleOptions(num=null, side=null) {
+  const resetBtn = document.querySelector('.reset-btn');
+
+  if(openedSubmenu) {
+    bladerSubmenu?.classList.remove('active');
+    dataSubmenu?.classList.remove('active');
+    resultSubmenu?.classList.remove('active');
+    openedSubmenu = null;
+    return; // ここで処理終了
+  }
+
+  if((side==='L' || side==='R') && (scores.L>=4 || scores.R>=4)) return;
+
+  if(num===null){
+    num = Math.max(...Object.keys(battleResults).map(Number),0)+1;
+  }
+
+  // ★メニュー展開中はカードをタップしてもオプションは展開せず、メニューだけ閉じる
+  if(openedSubmenu) {
+    bladerSubmenu?.classList.remove('active');
+    dataSubmenu?.classList.remove('active');
+    resultSubmenu?.classList.remove('active');
+    openedSubmenu = null;
+    return; 
+  }
+
+  const btnId = `battle${num}`;
+  const btn = document.getElementById(btnId);
+
+  // 同じボタンが展開中なら閉じる
+  if(openedButton === btn){
+    document.getElementById('battleOptions').classList.add('hidden');
+    openedButton = null;
+    // 展開終了したので戻るボタンを有効化
+    resetBtn.disabled = false;
+    resetBtn.style.opacity = 1;
+    return;
+  }
+
+  currentBattle = num;
+  openedButton = btn;
+
+  const optionsEl = document.getElementById('battleOptions');
+  const leftGroup = document.getElementById('leftOptions');
+  const rightGroup = document.getElementById('rightOptions');
+
+  optionsEl.classList.remove('hidden');
+
+  if(side==='L'){
+    leftGroup.style.display='grid';
+    rightGroup.style.display='none';
+  } else if(side==='R'){
+    leftGroup.style.display='none';
+    rightGroup.style.display='grid';
+  } else {
+    leftGroup.style.display='grid';
+    rightGroup.style.display='grid';
+  }
+
+  // 展開中は戻るボタンを無効化
+  resetBtn.disabled = true;
+  resetBtn.style.opacity = 0.5;
 }
 
-.blader-select-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
+function selectResult(side, type) {
+  const pointMap = { SF:1, BF:2, OF:2, XF:3 };
+  const labelMap = { SF:'SPIN', BF:'BURST', OF:'OVER', XF:'XTREME' };
+  const leftScoreEl = document.getElementById('leftScore');
+  const rightScoreEl = document.getElementById('rightScore');
+  const resetBtn = document.querySelector('.reset-btn');
+  const btn = document.getElementById(`battle${currentBattle}`);
 
-.clear-select-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-}
+  btn.classList.remove("spin","burst","over","xtreme");// 一旦、全部の色クラスを外す
 
+  if(battleResults[currentBattle]){
+    const prev = battleResults[currentBattle];
+    scores[prev.side]-=pointMap[prev.type];
+  }
 
+  battleResults[currentBattle]={side,type};
+  scores[side]+=pointMap[type];
+  lastBattleIndex=currentBattle;
 
+  leftScoreEl.textContent=scores.L;
+  rightScoreEl.textContent=scores.R;
 
+  btn.textContent = labelMap[type];
+  btn.classList.remove('tab-left','tab-right','no-glow');
+  btn.classList.add(side==='L'?'tab-left':'tab-right','no-glow');
 
+  if (type === "SF") btn.classList.add("spin");
+  if (type === "BF") btn.classList.add("burst");
+  if (type === "OF") btn.classList.add("over");
+  if (type === "XF") btn.classList.add("xtreme");
 
-/* データリスト全体 */
-#battleDataList {
-  padding: 10px;
-  overflow-y: auto;
-  max-height: 100vh;
-  display: flex;
-  flex-direction: column; /* 行を縦に並べる */
-  gap: 5px;
-}
+  // 展開を閉じる
+  document.getElementById('battleOptions').classList.add('hidden');
+  openedButton = null;
 
-/* ヘッダー行 */
-.battleDataHeader {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 40px; /* 最後の列はDelボタン用 */
-  font-size: 0.8rem;
-  gap: 5px;
-}
+  // ←ここで戻るボタンを再び有効化
+  resetBtn.disabled = false;
+  resetBtn.style.opacity = 1;
 
-.battleDataHeader span {
-  font-weight: bold;
-  color: #00ffff;
-  background: rgba(0,255,255,0.2);
-  padding: 5px 8px;
-  border-radius: 4px;
-  text-align: center;
-}
-.battleDataHeader span:last-child {
-  background: none; 
-  color: transparent; 
-  pointer-events: none; 
+  checkForClearOrNext();
 }
 
 
-/* データ行 */
-.battleDataItem {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr; /* Blader:Score:Time */
-  gap: 5px;
+function checkForClearOrNext() {
+  const hasClear=document.getElementById('clearBtn');
+  const leftScoreEl=document.getElementById('leftScore');
+  const rightScoreEl=document.getElementById('rightScore');
+
+  if(scores.L>=4||scores.R>=4){
+    if(scores.L>=4){leftScoreEl.style.color='yellow'; leftScoreEl.style.textShadow='0 0 25px yellow';}
+    if(scores.R>=4){rightScoreEl.style.color='yellow'; rightScoreEl.style.textShadow='0 0 25px yellow';}
+
+    if(!hasClear){
+      const clearBtn=document.createElement('button');
+      clearBtn.className='battle-btn clear-btn';
+      clearBtn.id='clearBtn';
+      clearBtn.textContent='CLEAR';
+      clearBtn.onclick=clearAll;
+      document.getElementById('battleBtnWrapper').appendChild(clearBtn);
+      adjustButtonHeights();
+    }
+  }else{
+    revealNextBattleButton(currentBattle);
+  }
 }
 
-.battleDataItem span {
-  color: #fff;
-  background: rgba(0,0,0,0.3);
-  padding: 5px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+function revealNextBattleButton(currentIndex){
+  const nextIndex=currentIndex+1;
+  if(nextIndex>7) return;
+  const wrapper=document.getElementById('battleBtnWrapper');
+  if(!document.getElementById(`battle${nextIndex}`)){
+    const nextBtn=document.createElement('button');
+    nextBtn.className='battle-btn';
+    nextBtn.id=`battle${nextIndex}`;
+    nextBtn.textContent=getOrdinalSuffix(nextIndex);
+    nextBtn.onclick=()=>toggleBattleOptions(nextIndex);
+    wrapper.appendChild(nextBtn);
+  }
+  adjustButtonHeights();
 }
 
-/* 左・中央・右揃え */
-.battleDataItem span:nth-child(1),
-.battleDataHeader span:nth-child(1) { text-align: left; padding-left: 10px; }
-.battleDataItem span:nth-child(2),
-.battleDataHeader span:nth-child(2) { text-align: center; }
-.battleDataItem span:nth-child(3),
-.battleDataHeader span:nth-child(3) { text-align: right; padding-right: 10px; }
+function undoLastBattle(){
+  if(!lastBattleIndex||!battleResults[lastBattleIndex]) return;
+  const {side,type}=battleResults[lastBattleIndex];
+  const pointMap={SF:1,BF:2,OF:2,XF:3};
 
-/* Blader列のテキスト改行防止＆省略 */
-.battleDataItem span:nth-child(1) {
-  text-align: left;
-  padding-left: 10px;
-  white-space: nowrap;      /* 改行を禁止 */
-  overflow: hidden;         /* はみ出た部分を非表示 */
-  text-overflow: ellipsis;  /* 省略記号 (…) を表示 */
+  scores[side]-=pointMap[type];
+  document.getElementById('leftScore').textContent=scores.L;
+  document.getElementById('rightScore').textContent=scores.R;
+
+  const btn=document.getElementById(`battle${lastBattleIndex}`);
+  btn.textContent=getOrdinalSuffix(lastBattleIndex);
+  btn.classList.remove('tab-left','tab-right','no-glow');
+
+  for(let i=lastBattleIndex+1;i<=7;i++){
+    const b=document.getElementById(`battle${i}`);
+    if(b)b.remove();
+    delete battleResults[i];
+  }
+
+  delete battleResults[lastBattleIndex];
+  lastBattleIndex=Math.max(...Object.keys(battleResults).map(Number),0)||0;
+
+  document.getElementById('leftScore').style.color='#fff';
+  document.getElementById('rightScore').style.color='#fff';
+  document.getElementById('leftScore').style.textShadow='0 0 25px rgba(255,255,255,0.6)';
+  document.getElementById('rightScore').style.textShadow='0 0 25px rgba(255,255,255,0.6)';
+  const clearBtn=document.getElementById('clearBtn');
+  if(clearBtn) clearBtn.remove();
+
+  adjustButtonHeights();
 }
 
-.battle-options {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  display: flex;
-  justify-content: space-between;
-  pointer-events: none;
-  z-index: 9999;
-}
-.option-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  width: 40%;
-  height: 90%;
-  pointer-events: all;
-  position: absolute;
-  top: 5%;
-}
-#leftOptions { left: 0; }
-#rightOptions { right: 0; }
+function clearAll(){
 
-.option-btn {
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 10px;
-  background-color: rgba(0,0,0,0.6);
-  background-size: cover;
-  background-position: center;
-  cursor: pointer;
-  opacity: 0.9;
-  transition: 0.2s;
-}
-.option-btn:hover { opacity: 1; }
+  saveBattleData(); 
 
-.hidden { display: none; }
+  scores={L:0,R:0};
+  battleResults={};
+  currentBattle=1;
+  lastBattleIndex=0;
+  openedButton = null;
+
+  document.getElementById('leftScore').textContent=0;
+  document.getElementById('rightScore').textContent=0;
+  document.getElementById('leftScore').style.color='#fff';
+  document.getElementById('rightScore').style.color='#fff';
+  document.getElementById('leftScore').style.textShadow='0 0 25px rgba(255,255,255,0.6)';
+  document.getElementById('rightScore').style.textShadow='0 0 25px rgba(255,255,255,0.6)';
+
+  const wrapper=document.getElementById('battleBtnWrapper');
+  wrapper.innerHTML=`<button class="battle-btn" id="battle1" onclick="toggleBattleOptions(1)">1st</button>`;
+
+  adjustButtonHeights();
+}
+
+// ----- ボタン縦幅自動調整 -----
+function adjustButtonHeights() {
+  const wrapper = document.getElementById('battleBtnWrapper');
+  const buttons = Array.from(wrapper.querySelectorAll('.battle-btn'));
+  const resetBtn = document.querySelector('.reset-btn');
+  
+  const cardHeight = window.innerHeight * 0.9;
+  const resetHeight = resetBtn ? resetBtn.offsetHeight : 0;
+
+  if(buttons.length < 3) {
+    // 1～2個はセンター揃え
+    wrapper.style.justifyContent = 'center';
+  } else {
+    // 3個以上なら上下余白を詰める
+    wrapper.style.justifyContent = 'flex-start';
+  }
+
+  const gap = 5; // 実際のボタン間ギャップ
+  const availableHeight = cardHeight - resetHeight - ((buttons.length -1) * gap);
+  const btnHeight = Math.min(60, availableHeight / buttons.length);
+
+  buttons.forEach(btn => btn.style.height = btnHeight + 'px');
+}
+
+
+function getOrdinalSuffix(num) {
+  if (num % 100 >= 11 && num % 100 <= 13) return num + 'th';
+  switch (num % 10) {
+    case 1: return num + 'st';
+    case 2: return num + 'nd';
+    case 3: return num + 'rd';
+    default: return num + 'th';
+  }
+}
+
+
+// メニュー以外をクリックしたら閉じる処理
+document.addEventListener('click', (event) => {
+  const isClickInsideMenu = menuPanel.contains(event.target) 
+                           || bladerSubmenu.contains(event.target)
+                           || dataSubmenu.contains(event.target)
+                           || resultSubmenu.contains(event.target)
+                           || menuIcon.contains(event.target)
+                           || bladerBtn.contains(event.target);
+
+  if (!isClickInsideMenu) {
+    // メニューを閉じる
+    menuPanel.classList.remove('active');
+    bladerSubmenu.classList.remove('active');
+    dataSubmenu.classList.remove('active');
+    resultSubmenu.classList.remove('active');
+    openedSubmenu = null; // 開いているサブメニュー追跡もリセット
+  }
+});
+
+function saveBattleData() {
+  const leftBlader = document.getElementById('leftBlader').value;
+  const rightBlader = document.getElementById('rightBlader').value;
+  const timestamp = new Date().toISOString();
+  
+  let savedData = JSON.parse(localStorage.getItem('battleData') || '[]');
+
+  if(leftBlader) {
+    savedData.push({
+      blader: leftBlader,
+      score: scores.L,
+      opponentScore: scores.R,
+      timestamp: timestamp,
+      side: 'L'
+    });
+  }
+
+  if(rightBlader) {
+    savedData.push({
+      blader: rightBlader,
+      score: scores.R,
+      opponentScore: scores.L,
+      timestamp: timestamp,
+      side: 'R'
+    });
+  }
+
+  localStorage.setItem('battleData', JSON.stringify(savedData));
+}
+
+// メニュー2層目で保存データを表示する
+function showDataSubmenu() {
+  const dataList = JSON.parse(localStorage.getItem('battleData') || '[]');
+  dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp));
+
+  const container = document.getElementById('dataBattleList');
+  container.innerHTML = '';
+
+  // ヘッダー（Del列なし）
+  const headerDiv = document.createElement('div');
+  headerDiv.className = 'battleDataHeader';
+  headerDiv.innerHTML = `
+    <span>Blader</span>
+    <span>Score</span>
+    <span>Time</span>
+    <span></span>
+  `;
+  container.appendChild(headerDiv);
+
+  // データ行
+  dataList.forEach((d, index) => {
+    const date = new Date(d.timestamp);
+    const hhmm = date.getHours().toString().padStart(2,'0') + ':' + date.getMinutes().toString().padStart(2,'0');
+
+    const div = document.createElement('div');
+    div.className = 'battleDataItem';
+    div.style.display = 'grid';
+    div.style.gridTemplateColumns = '2fr 1fr 1fr auto'; // 最後にDel用の列
+    div.style.alignItems = 'center';
+
+    div.innerHTML = `
+      <span>${d.blader}</span>
+      <span>${d.score}-${d.opponentScore}</span>
+      <span>${hhmm}</span>
+      <button class="small-del-btn">Del</button>
+    `;
+
+    div.querySelector('.small-del-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(confirm("このデータを削除してもよろしいですか？")) {
+        dataList.splice(index, 1);
+        localStorage.setItem('battleData', JSON.stringify(dataList));
+        showDataSubmenu(); // 再描画
+      }
+    });
+
+    container.appendChild(div);
+  });
+}
+
+
+
+
+// リザルト表示
+function showResultSubmenu() {
+  const dataList = JSON.parse(localStorage.getItem('battleData') || '[]');
+  dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp)); // 降順
+
+  const container = document.getElementById('resultBattleList');
+  container.innerHTML = '';
+
+  const summary = {};
+
+  dataList.forEach(d => {
+    if(!summary[d.blader]){
+      summary[d.blader] = {battle:0, win:0, lose:0, score:0, loss:0};
+    }
+    summary[d.blader].battle++;
+    summary[d.blader].score += d.score;
+    summary[d.blader].loss += d.opponentScore;
+    if(d.score > d.opponentScore) summary[d.blader].win++;
+    else summary[d.blader].lose++;
+  });
+
+  // ヘッダー
+ const headerDiv = document.createElement('div');
+headerDiv.className = 'battleDataHeader';
+headerDiv.style.display = 'grid';
+headerDiv.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; // ←全列幅を統一
+headerDiv.innerHTML = `
+  <span>Blader</span>
+  <span>Battle</span>
+  <span>Win</span>
+  <span>Lose</span>
+  <span>Win%</span>
+  <span>Score</span>
+  <span>Diff</span>
+`;
+container.appendChild(headerDiv);
+
+  Object.entries(summary).forEach(([blader, stats]) => {
+    const winRate = stats.battle ? Math.floor((stats.win / stats.battle) * 100) + '%' : '0%';
+    const diff = stats.score - stats.loss;
+    const div = document.createElement('div');
+    div.className = 'battleDataItem';
+    div.style.display = 'grid';
+    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; // ヘッダーと同じ
+    div.innerHTML = `
+      <span>${blader}</span>
+      <span>${stats.battle}</span>
+      <span>${stats.win}</span>
+      <span>${stats.lose}</span>
+      <span>${winRate}</span>
+      <span>${stats.score}-${stats.loss}</span>
+      <span>${diff}</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+let vh = window.innerHeight * 0.01;
+document.documentElement.style.setProperty('--vh', `${vh}px`);
+
+
+// リザルト
+const resultBtn = menuPanel.querySelectorAll('.menu-btn')[1]; // リザルトボタン
+const resultSubmenu = document.getElementById('resultSubmenu');
+
+resultBtn.addEventListener('click', () => {
+  if(openedSubmenu && openedSubmenu !== resultSubmenu){
+    openedSubmenu.classList.remove('active'); 
+  }
+  const isActive = resultSubmenu.classList.contains('active');
+  resultSubmenu.classList.toggle('active', !isActive);
+  openedSubmenu = resultSubmenu.classList.contains('active') ? resultSubmenu : null;
+
+  if(resultSubmenu.classList.contains('active')){
+    showResultSubmenu();
+  }
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const resultClearBtn = document.getElementById("resultClearBtn");
+    const resultBattleList = document.getElementById("resultBattleList");
+    const leftScore = document.getElementById("leftScore");
+    const rightScore = document.getElementById("rightScore");
+
+    resultClearBtn.addEventListener("click", function() {
+        // 確認ダイアログ
+        if (confirm("全バトルデータを削除してもよろしいですか？")) {
+
+
+            // ローカルストレージに保存している場合も削除
+            localStorage.removeItem("battleData"); // 既存データキー名に合わせて調整
+            localStorage.removeItem("resultData"); // 必要に応じて
+            // 再描画
+            showResultSubmenu();
+            showDataSubmenu();
+        }
+    });
+});
+
+
+
+function updateResultList() {
+  const resultList = document.getElementById('resultBattleList');
+  resultList.innerHTML = '';
+
+  if(battleData.length === 0){
+    resultList.innerHTML = '<div style="color:#fff; text-align:center;">データがありません</div>';
+    return;
+  }
+
+  battleData.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'battleDataItem';
+    div.innerHTML = `
+      <span>${item.blader}</span>
+      <span>${item.score}</span>
+      <span>${item.time}</span>
+    `;
+    resultList.appendChild(div);
+  });
+}
+
+
+
+window.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('overlay');
+
+  // セッション中に一度表示したかチェック
+  if (!sessionStorage.getItem('welcomeShown')) {
+    overlay.style.display = 'flex';
+
+    overlay.addEventListener('click', () => {
+      overlay.style.transition = 'opacity 0.5s ease';
+      overlay.style.opacity = '0';
+
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        sessionStorage.setItem('welcomeShown', 'true'); // このセッションではもう表示しない
+        location.reload(); // 画面リロードしたい場合のみ
+      }, 500);
+    });
+  } else {
+    overlay.style.display = 'none';
+  }
+});
+
+
+window.addEventListener('load', adjustButtonHeights);
+window.addEventListener('resize', adjustButtonHeights);
