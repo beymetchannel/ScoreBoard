@@ -341,7 +341,7 @@ body {
 
 .left-card {
   background: linear-gradient(to right,
-    rgba(0, 51, 68, 0.2) 0%,   /* 左：不透明 */
+    rgba(0, 51, 68, 0.3) 0%,   /* 左：不透明 */
     rgba(0, 51, 68, 1.0) 90% /* 中央に向かって透明に */
   );
 }
@@ -349,7 +349,7 @@ body {
 /* 右カード */
 .right-card {
   background: linear-gradient(to left,
-    rgba(68, 0, 0, 0.2) 0%,    /* 右：不透明 */
+    rgba(68, 0, 0, 0.3) 0%,    /* 右：不透明 */
     rgba(68, 0, 0, 1.0) 90%
   );
 }
@@ -399,8 +399,8 @@ body {
   background-color: rgba(0,0,0,0.8);
   font-family: 'Orbitron', sans-serif;
   font-size: 1.3em;
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff;
+  color: #ffffff;
+  text-shadow: 0 0 10px #ffffff;
   cursor: pointer;
   transition: 0.3s;
   font-weight: bold;
@@ -439,8 +439,8 @@ body {
 
 /* XTREME (紫ピンク) */
 .battle-btn.xtreme {
-  color: #d200ff;
-  text-shadow: 0 0 8px #d200ff, 0 0 16px #a000ff;
+  color: #ae00ff;
+  text-shadow: 0 0 8px #ae00ff, 0 0 16px #ae00ff;
 }
 
 
@@ -672,4 +672,3 @@ body {
 .option-btn:hover { opacity: 1; }
 
 .hidden { display: none; }
-
