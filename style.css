@@ -341,16 +341,16 @@ body {
 
 .left-card {
   background: linear-gradient(to right,
-    rgba(0, 51, 68, 0.0) 0%,   /* 左：不透明 */
-    rgba(0, 51, 68, 1.0) 80% /* 中央に向かって透明に */
+    rgba(0, 51, 68, 0.2) 0%,   /* 左：不透明 */
+    rgba(0, 51, 68, 1.0) 90% /* 中央に向かって透明に */
   );
 }
 
 /* 右カード */
 .right-card {
   background: linear-gradient(to left,
-    rgba(68, 0, 0, 0.0) 0%,    /* 右：不透明 */
-    rgba(68, 0, 0, 1.0) 80%
+    rgba(68, 0, 0, 0.2) 0%,    /* 右：不透明 */
+    rgba(68, 0, 0, 1.0) 90%
   );
 }
 
@@ -672,3 +672,4 @@ body {
 .option-btn:hover { opacity: 1; }
 
 .hidden { display: none; }
+
