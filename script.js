@@ -364,6 +364,9 @@ function undoLastBattle(){
   btn.textContent=getOrdinalSuffix(lastBattleIndex);
   btn.classList.remove('tab-left','tab-right','no-glow');
 
+  btn.classList.remove('tab-left', 'tab-right', 'no-glow', "spin", "burst", "over", "xtreme");
+  btn.removeAttribute("style");
+
   for(let i=lastBattleIndex+1;i<=7;i++){
     const b=document.getElementById(`battle${i}`);
     if(b)b.remove();
@@ -629,6 +632,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const resultBattleList = document.getElementById("resultBattleList");
     const leftScore = document.getElementById("leftScore");
     const rightScore = document.getElementById("rightScore");
+
+
+
 
     resultClearBtn.addEventListener("click", function() {
         // 確認ダイアログ
