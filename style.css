@@ -339,40 +339,21 @@ body {
   margin: 5px 0; 
 }
 
-/* 左側カード：左端 → 中央へ透明になる */
-.left-card::before {
-  content: "";
-  position: absolute;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-  width: 50%; /* 必要に応じて調整 */
-  height: 100%;
+.left-card {
   background: linear-gradient(to right,
-    rgba(0, 0, 0, 0.9) 0%,   /* 画面端：90%透明度 */
-    rgba(0, 0, 0, 0.6) 40%,
-    rgba(0, 0, 0, 0.0) 100% /* 中央：透明 */
+    rgba(0, 51, 68, 0.0) 0%,   /* 左：不透明 */
+    rgba(0, 51, 68, 1.0) 80% /* 中央に向かって透明に */
   );
-  pointer-events: none;
 }
 
-/* 右側カード：右端 → 中央へ透明になる */
-.right-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
+/* 右カード */
+.right-card {
   background: linear-gradient(to left,
-    rgba(0, 0, 0, 0.9) 0%, 
-    rgba(0, 0, 0, 0.6) 40%,
-    rgba(0, 0, 0, 0.0) 100%
+    rgba(68, 0, 0, 0.0) 0%,    /* 右：不透明 */
+    rgba(68, 0, 0, 1.0) 80%
   );
-  pointer-events: none;
 }
-.left-card { background-color: #003344; }
-.right-card { background-color: #440000; }
+
 
 
 
