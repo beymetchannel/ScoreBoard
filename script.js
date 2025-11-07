@@ -1,4 +1,4 @@
-/* ===== メニュー制御 ===== */
+
 const menuIcon = document.getElementById('menuIcon');
 const menuPanel = document.getElementById('menuPanel');
 const bladerBtn = document.getElementById('bladerBtn');
@@ -9,7 +9,7 @@ const dataSubmenu = document.getElementById('dataSubmenu');
 
 dataBtn.addEventListener('click', () => {
   if(openedSubmenu && openedSubmenu !== dataSubmenu){
-    openedSubmenu.classList.remove('active'); // 前のサブメニュー閉じる
+    openedSubmenu.classList.remove('active'); 
   }
   
   const isActive = dataSubmenu.classList.contains('active');
@@ -26,24 +26,22 @@ menuIcon.addEventListener('click', () => {
   const isActive = menuPanel.classList.contains('active');
   menuPanel.classList.toggle('active', !isActive);
 
-  // 全サブメニューを閉じる
   bladerSubmenu.classList.remove('active');
   dataSubmenu.classList.remove('active');
   resultSubmenu.classList.remove('active');
 
   battleOptions.classList.add('hidden');
 
-  // 開いているサブメニュー追跡もリセット
   openedSubmenu = null;
 });
 
 
 
-let openedSubmenu = null; // 展開中のサブメニューを追跡
+let openedSubmenu = null; 
 
 bladerBtn.addEventListener('click', () => {
   if(openedSubmenu && openedSubmenu !== bladerSubmenu){
-    openedSubmenu.classList.remove('active'); // 前のサブメニュー閉じる
+    openedSubmenu.classList.remove('active');
   }
   
   const isActive = bladerSubmenu.classList.contains('active');
@@ -52,8 +50,6 @@ bladerBtn.addEventListener('click', () => {
   openedSubmenu = bladerSubmenu.classList.contains('active') ? bladerSubmenu : null;
 });
 
-
-/* ===== ブレーダー登録 ===== */
 const addBlader = document.getElementById('addBlader');
 const bladerInput = document.getElementById('bladerName');
 const bladerList = document.getElementById('bladerList');
@@ -75,11 +71,11 @@ function updateBladerSelects() {
       option.textContent = name;
       select.appendChild(option);
     });
-    // 元の値がある場合は復元
+
     if (fullList.includes(currentValue)) {
       select.value = currentValue;
     } else {
-      select.value = ''; // 存在しなければ空に
+      select.value = ''; 
     }
     select._prevValue = select.value;
   });
@@ -89,26 +85,22 @@ function updateBladerSelects() {
     const rightValue = rightSelect.value;
     const select = side === 'L' ? leftSelect : rightSelect;
 
-    // 新規登録選択時
     if (select.value === '新規登録') {
       const name = prompt('新しいブレーダー名を入力してください');
       if (name && name.trim() !== '') {
         addNewBlader(name, select);
       } else {
-        // キャンセル or 空入力 → 選択を空に
         select.value = '';
       }
     }
 
-    // 左右同じ値なら入れ替え
     if (leftSelect.value && leftSelect.value === rightSelect.value) {
       if (side === 'L') {
-        // 左を変えた場合 → 右の値を左の前の値に入れ替え
+
         const temp = rightSelect.value;
         rightSelect.value = leftSelect._prevValue || ''; 
         leftSelect.value = temp;
       } else {
-        // 右を変えた場合 → 左の値を右の前の値に入れ替え
         const temp = leftSelect.value;
         leftSelect.value = rightSelect._prevValue || '';
         rightSelect.value = temp;
@@ -123,7 +115,6 @@ function updateBladerSelects() {
   rightSelect.addEventListener('change', () => handleSelectChange('R'));
 }
 
-// 新規ブレーダー追加関数
 function addNewBlader(name, selectElement) {
   name = name.trim();
   if(!name || name === '新規登録') {
@@ -136,19 +127,17 @@ function addNewBlader(name, selectElement) {
   if(!list.includes(name)) list.push(name);
   localStorage.setItem('bladers', JSON.stringify(list));
 
-  loadBladers();        // 左メニューリストも更新
-  updateBladerSelects(); // セレクトも更新
-  selectElement.value = name; // 選択したままにする
+  loadBladers();   
+  updateBladerSelects(); 
+  selectElement.value = name;
 }
 
-
-// ×ボタンで選択解除
 document.querySelectorAll('.clear-select-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     const side = btn.dataset.side;
     const select = document.getElementById(side === 'L' ? 'leftBlader' : 'rightBlader');
-    select.value = ''; // 空にする
+    select.value = '';
   });
 });
 
@@ -186,10 +175,9 @@ addBlader.addEventListener('click', () => {
 });
 
 window.addEventListener('load', () => {
-  // ブレーダー選択肢の更新
+
   updateBladerSelects();
 
-  // 左メニューの一覧を更新
   loadBladers();
   showDataSubmenu();
   showResultSubmenu();
@@ -204,7 +192,7 @@ let scores = { L: 0, R: 0 };
 let battleResults = {};
 let currentBattle = 1;
 let lastBattleIndex = 0;
-let openedButton = null; // 展開中の中央ボタンを追跡
+let openedButton = null; 
 
 function toggleBattleOptions(num=null, side=null) {
   const resetBtn = document.querySelector('.reset-btn');
@@ -214,7 +202,7 @@ function toggleBattleOptions(num=null, side=null) {
     dataSubmenu?.classList.remove('active');
     resultSubmenu?.classList.remove('active');
     openedSubmenu = null;
-    return; // ここで処理終了
+    return;
   }
 
   if((side==='L' || side==='R') && (scores.L>=4 || scores.R>=4)) return;
@@ -223,7 +211,6 @@ function toggleBattleOptions(num=null, side=null) {
     num = Math.max(...Object.keys(battleResults).map(Number),0)+1;
   }
 
-  // ★メニュー展開中はカードをタップしてもオプションは展開せず、メニューだけ閉じる
   if(openedSubmenu) {
     bladerSubmenu?.classList.remove('active');
     dataSubmenu?.classList.remove('active');
@@ -235,11 +222,10 @@ function toggleBattleOptions(num=null, side=null) {
   const btnId = `battle${num}`;
   const btn = document.getElementById(btnId);
 
-  // 同じボタンが展開中なら閉じる
   if(openedButton === btn){
     document.getElementById('battleOptions').classList.add('hidden');
     openedButton = null;
-    // 展開終了したので戻るボタンを有効化
+
     resetBtn.disabled = false;
     resetBtn.style.opacity = 1;
     return;
@@ -265,7 +251,6 @@ function toggleBattleOptions(num=null, side=null) {
     rightGroup.style.display='grid';
   }
 
-  // 展開中は戻るボタンを無効化
   resetBtn.disabled = true;
   resetBtn.style.opacity = 0.5;
 }
@@ -278,7 +263,7 @@ function selectResult(side, type) {
   const resetBtn = document.querySelector('.reset-btn');
   const btn = document.getElementById(`battle${currentBattle}`);
 
-  btn.classList.remove("spin","burst","over","xtreme");// 一旦、全部の色クラスを外す
+  btn.classList.remove("spin","burst","over","xtreme");
 
   if(battleResults[currentBattle]){
     const prev = battleResults[currentBattle];
@@ -301,11 +286,9 @@ function selectResult(side, type) {
   if (type === "OF") btn.classList.add("over");
   if (type === "XF") btn.classList.add("xtreme");
 
-  // 展開を閉じる
   document.getElementById('battleOptions').classList.add('hidden');
   openedButton = null;
 
-  // ←ここで戻るボタンを再び有効化
   resetBtn.disabled = false;
   resetBtn.style.opacity = 1;
 
@@ -409,7 +392,6 @@ function clearAll(){
   adjustButtonHeights();
 }
 
-// ----- ボタン縦幅自動調整 -----
 function adjustButtonHeights() {
   const wrapper = document.getElementById('battleBtnWrapper');
   const buttons = Array.from(wrapper.querySelectorAll('.battle-btn'));
@@ -419,14 +401,12 @@ function adjustButtonHeights() {
   const resetHeight = resetBtn ? resetBtn.offsetHeight : 0;
 
   if(buttons.length < 3) {
-    // 1～2個はセンター揃え
     wrapper.style.justifyContent = 'center';
   } else {
-    // 3個以上なら上下余白を詰める
     wrapper.style.justifyContent = 'flex-start';
   }
 
-  const gap = 5; // 実際のボタン間ギャップ
+  const gap = 5; 
   const availableHeight = cardHeight - resetHeight - ((buttons.length -1) * gap);
   const btnHeight = Math.min(60, availableHeight / buttons.length);
 
@@ -445,7 +425,6 @@ function getOrdinalSuffix(num) {
 }
 
 
-// メニュー以外をクリックしたら閉じる処理
 document.addEventListener('click', (event) => {
   const isClickInsideMenu = menuPanel.contains(event.target) 
                            || bladerSubmenu.contains(event.target)
@@ -455,12 +434,11 @@ document.addEventListener('click', (event) => {
                            || bladerBtn.contains(event.target);
 
   if (!isClickInsideMenu) {
-    // メニューを閉じる
     menuPanel.classList.remove('active');
     bladerSubmenu.classList.remove('active');
     dataSubmenu.classList.remove('active');
     resultSubmenu.classList.remove('active');
-    openedSubmenu = null; // 開いているサブメニュー追跡もリセット
+    openedSubmenu = null; 
   }
 });
 
@@ -494,7 +472,6 @@ function saveBattleData() {
   localStorage.setItem('battleData', JSON.stringify(savedData));
 }
 
-// メニュー2層目で保存データを表示する
 function showDataSubmenu() {
   const dataList = JSON.parse(localStorage.getItem('battleData') || '[]');
   dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp));
@@ -502,7 +479,6 @@ function showDataSubmenu() {
   const container = document.getElementById('dataBattleList');
   container.innerHTML = '';
 
-  // ヘッダー（Del列なし）
   const headerDiv = document.createElement('div');
   headerDiv.className = 'battleDataHeader';
   headerDiv.innerHTML = `
@@ -513,7 +489,6 @@ function showDataSubmenu() {
   `;
   container.appendChild(headerDiv);
 
-  // データ行
   dataList.forEach((d, index) => {
     const date = new Date(d.timestamp);
     const hhmm = date.getHours().toString().padStart(2,'0') + ':' + date.getMinutes().toString().padStart(2,'0');
@@ -521,7 +496,7 @@ function showDataSubmenu() {
     const div = document.createElement('div');
     div.className = 'battleDataItem';
     div.style.display = 'grid';
-    div.style.gridTemplateColumns = '2fr 1fr 1fr auto'; // 最後にDel用の列
+    div.style.gridTemplateColumns = '2fr 1fr 1fr auto';
     div.style.alignItems = 'center';
 
     div.innerHTML = `
@@ -536,7 +511,7 @@ function showDataSubmenu() {
       if(confirm("このデータを削除してもよろしいですか？")) {
         dataList.splice(index, 1);
         localStorage.setItem('battleData', JSON.stringify(dataList));
-        showDataSubmenu(); // 再描画
+        showDataSubmenu(); 
       }
     });
 
@@ -545,12 +520,9 @@ function showDataSubmenu() {
 }
 
 
-
-
-// リザルト表示
 function showResultSubmenu() {
   const dataList = JSON.parse(localStorage.getItem('battleData') || '[]');
-  dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp)); // 降順
+  dataList.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp)); 
 
   const container = document.getElementById('resultBattleList');
   container.innerHTML = '';
@@ -568,11 +540,11 @@ function showResultSubmenu() {
     else summary[d.blader].lose++;
   });
 
-  // ヘッダー
+
  const headerDiv = document.createElement('div');
 headerDiv.className = 'battleDataHeader';
 headerDiv.style.display = 'grid';
-headerDiv.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; // ←全列幅を統一
+headerDiv.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr';
 headerDiv.innerHTML = `
   <span>Blader</span>
   <span>Battle</span>
@@ -590,7 +562,7 @@ container.appendChild(headerDiv);
     const div = document.createElement('div');
     div.className = 'battleDataItem';
     div.style.display = 'grid';
-    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; // ヘッダーと同じ
+    div.style.gridTemplateColumns = '2fr 1fr 1fr 1fr 1fr 2fr 1fr'; 
     div.innerHTML = `
       <span>${blader}</span>
       <span>${stats.battle}</span>
@@ -608,8 +580,7 @@ let vh = window.innerHeight * 0.01;
 document.documentElement.style.setProperty('--vh', `${vh}px`);
 
 
-// リザルト
-const resultBtn = menuPanel.querySelectorAll('.menu-btn')[1]; // リザルトボタン
+const resultBtn = menuPanel.querySelectorAll('.menu-btn')[1]; 
 const resultSubmenu = document.getElementById('resultSubmenu');
 
 resultBtn.addEventListener('click', () => {
@@ -637,14 +608,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     resultClearBtn.addEventListener("click", function() {
-        // 確認ダイアログ
+
         if (confirm("全バトルデータを削除してもよろしいですか？")) {
 
+            localStorage.removeItem("battleData"); 
+            localStorage.removeItem("resultData");
 
-            // ローカルストレージに保存している場合も削除
-            localStorage.removeItem("battleData"); // 既存データキー名に合わせて調整
-            localStorage.removeItem("resultData"); // 必要に応じて
-            // 再描画
             showResultSubmenu();
             showDataSubmenu();
         }
@@ -679,7 +648,6 @@ function updateResultList() {
 window.addEventListener('DOMContentLoaded', () => {
   const overlay = document.getElementById('overlay');
 
-  // セッション中に一度表示したかチェック
   if (!sessionStorage.getItem('welcomeShown')) {
     overlay.style.display = 'flex';
 
@@ -689,8 +657,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
       setTimeout(() => {
         overlay.style.display = 'none';
-        sessionStorage.setItem('welcomeShown', 'true'); // このセッションではもう表示しない
-        location.reload(); // 画面リロードしたい場合のみ
+        sessionStorage.setItem('welcomeShown', 'true'); 
+        location.reload(); 
       }, 500);
     });
   } else {
@@ -701,3 +669,4 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
+
