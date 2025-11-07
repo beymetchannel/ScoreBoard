@@ -9,7 +9,7 @@ html, body {
 }
 
 body {
-  background-image: url('https://i.imgur.com/xY23anZ.png');
+  background-image: url('BackImage.png');
   background-size: 100% 100%;
   background-position: center; 
   background-repeat: no-repeat; 
@@ -651,4 +651,5 @@ body {
 .option-btn:hover { opacity: 1; }
 
 .hidden { display: none; }
+
 
