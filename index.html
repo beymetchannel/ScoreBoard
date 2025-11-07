@@ -7,15 +7,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="ScoreBoardIcon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="バトルスコア">
-  <title>バトルスコア</title>
+  <meta name="apple-mobile-web-app-title" content="スコアボード">
+  <title>スコアボード</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="script.js"></script>
 </head>
 <body>
 
-
-  <!-- ウェルカムボード -->
   <div id="overlay">
     <div id="welcomeBoard">
       ScoreBoard<br>
@@ -26,7 +24,6 @@
 
 
 
-  <!-- ===== メニュー ===== -->
   <div class="menu-container">
     <div class="menu-icon" id="menuIcon">☰</div>
   </div>
@@ -54,7 +51,7 @@
     <div id="resultBattleList"></div>
   </div>
 
-  <!-- ===== カード類 ===== -->
+
   <div class="card left-card" onclick="toggleBattleOptions(null,'L')">
     <div class="blader-select-area" onclick="event.stopPropagation()">
       <div class="blader-select-wrapper">
@@ -88,7 +85,6 @@
     <div class="score" id="rightScore">0</div>
   </div>
 
-  <!-- ===== バトルオプション ===== -->
   <div id="battleOptions" class="battle-options hidden">
     <div class="option-group" id="leftOptions">
       <button class="option-btn" style="background-image:url('SPIN1.png')" onclick="selectResult('L','SF')"></button>
@@ -106,3 +102,4 @@
 
 </body>
 </html>
+
