@@ -6,6 +6,13 @@ const bladerSubmenu = document.getElementById('bladerSubmenu');
 const battleOptions = document.getElementById('battleOptions');
 const dataBtn = menuPanel.querySelectorAll('.menu-btn')[2];
 const dataSubmenu = document.getElementById('dataSubmenu');
+const addBlader = document.getElementById('addBlader');
+const bladerInput = document.getElementById('bladerName');
+const bladerList = document.getElementById('bladerList');
+const resultBtn = menuPanel.querySelectorAll('.menu-btn')[1]; 
+const resultSubmenu = document.getElementById('resultSubmenu');
+const battleData = JSON.parse(localStorage.getItem('battleData') || '[]');
+
 
 dataBtn.addEventListener('click', () => {
   if(openedSubmenu && openedSubmenu !== dataSubmenu){
@@ -24,12 +31,13 @@ dataBtn.addEventListener('click', () => {
 
 menuIcon.addEventListener('click', () => {
   const isActive = menuPanel.classList.contains('active');
+
   menuPanel.classList.toggle('active', !isActive);
+  optionOverlay.classList.toggle('active', !isActive);
 
   bladerSubmenu.classList.remove('active');
   dataSubmenu.classList.remove('active');
   resultSubmenu.classList.remove('active');
-
   battleOptions.classList.add('hidden');
 
   openedSubmenu = null;
@@ -50,9 +58,7 @@ bladerBtn.addEventListener('click', () => {
   openedSubmenu = bladerSubmenu.classList.contains('active') ? bladerSubmenu : null;
 });
 
-const addBlader = document.getElementById('addBlader');
-const bladerInput = document.getElementById('bladerName');
-const bladerList = document.getElementById('bladerList');
+
 
 function updateBladerSelects() {
   let bladers = JSON.parse(localStorage.getItem('bladers')) || [];
@@ -202,6 +208,7 @@ function toggleBattleOptions(num=null, side=null) {
     dataSubmenu?.classList.remove('active');
     resultSubmenu?.classList.remove('active');
     openedSubmenu = null;
+    optionOverlay.classList.remove('active');
     return;
   }
 
@@ -211,19 +218,16 @@ function toggleBattleOptions(num=null, side=null) {
     num = Math.max(...Object.keys(battleResults).map(Number),0)+1;
   }
 
-  if(openedSubmenu) {
-    bladerSubmenu?.classList.remove('active');
-    dataSubmenu?.classList.remove('active');
-    resultSubmenu?.classList.remove('active');
-    openedSubmenu = null;
-    return; 
-  }
-
   const btnId = `battle${num}`;
   const btn = document.getElementById(btnId);
+  const optionsEl = document.getElementById('battleOptions');
+  const leftGroup = document.getElementById('leftOptions');
+  const rightGroup = document.getElementById('rightOptions');
+
 
   if(openedButton === btn){
     document.getElementById('battleOptions').classList.add('hidden');
+    optionOverlay.classList.remove('active');
     openedButton = null;
 
     resetBtn.disabled = false;
@@ -233,12 +237,8 @@ function toggleBattleOptions(num=null, side=null) {
 
   currentBattle = num;
   openedButton = btn;
-
-  const optionsEl = document.getElementById('battleOptions');
-  const leftGroup = document.getElementById('leftOptions');
-  const rightGroup = document.getElementById('rightOptions');
-
   optionsEl.classList.remove('hidden');
+  optionOverlay.classList.add('active');
 
   if(side==='L'){
     leftGroup.style.display='grid';
@@ -253,6 +253,17 @@ function toggleBattleOptions(num=null, side=null) {
 
   resetBtn.disabled = true;
   resetBtn.style.opacity = 0.5;
+
+  if (!optionOverlay.dataset.listenerAdded) {
+    optionOverlay.addEventListener('click', () => {
+      optionsEl.classList.add('hidden');
+      optionOverlay.classList.remove('active');
+      openedButton = null;
+      resetBtn.disabled = false;
+      resetBtn.style.opacity = 1;
+    });
+    optionOverlay.dataset.listenerAdded = "true"; 
+  }
 }
 
 function selectResult(side, type) {
@@ -262,6 +273,7 @@ function selectResult(side, type) {
   const rightScoreEl = document.getElementById('rightScore');
   const resetBtn = document.querySelector('.reset-btn');
   const btn = document.getElementById(`battle${currentBattle}`);
+  const optionOverlay = document.getElementById('optionOverlay');
 
   btn.classList.remove("spin","burst","over","xtreme");
 
@@ -287,6 +299,7 @@ function selectResult(side, type) {
   if (type === "XF") btn.classList.add("xtreme");
 
   document.getElementById('battleOptions').classList.add('hidden');
+  optionOverlay.classList.remove('active');
   openedButton = null;
 
   resetBtn.disabled = false;
@@ -580,8 +593,7 @@ let vh = window.innerHeight * 0.01;
 document.documentElement.style.setProperty('--vh', `${vh}px`);
 
 
-const resultBtn = menuPanel.querySelectorAll('.menu-btn')[1]; 
-const resultSubmenu = document.getElementById('resultSubmenu');
+
 
 resultBtn.addEventListener('click', () => {
   if(openedSubmenu && openedSubmenu !== resultSubmenu){
@@ -644,6 +656,13 @@ function updateResultList() {
 }
 
 
+optionOverlay.addEventListener('click', () => {
+  optionMenu.classList.remove('active');
+  optionOverlay.style.opacity = 0;
+  setTimeout(() => {
+    optionOverlay.classList.remove('active');
+  }, 500);
+});
 
 window.addEventListener('DOMContentLoaded', () => {
   const overlay = document.getElementById('overlay');
@@ -669,4 +688,3 @@ window.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', adjustButtonHeights);
 window.addEventListener('resize', adjustButtonHeights);
-
