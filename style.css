@@ -58,17 +58,18 @@ body {
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(2px);
   z-index: 500; 
-  display: none;
   opacity: 0;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 #optionOverlay.active {
   display: block;
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 
@@ -352,7 +353,6 @@ body {
   );
 }
 
-/* 右カード */
 .right-card {
   background: linear-gradient(to left,
     rgba(68, 0, 0, 0.3) 0%, 
