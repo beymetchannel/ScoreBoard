@@ -661,7 +661,7 @@ optionOverlay.addEventListener('click', () => {
   optionOverlay.style.opacity = 0;
   setTimeout(() => {
     optionOverlay.classList.remove('active');
-  }, 500);
+  }, 300);
 });
 
 window.addEventListener('DOMContentLoaded', () => {
